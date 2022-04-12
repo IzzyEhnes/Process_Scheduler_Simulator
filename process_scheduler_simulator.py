@@ -1,19 +1,25 @@
 import sys
 
-# First Come First Serve OS class
-class FCFS:
+# Parent class
+class OS:
+    process_list = []
+
+
+
+# First Come First Serve class; child of OS class
+class FCFS(OS):
     pass
 
 
 
-# High Priority First OS class
-class HPF:
+# High Priority First class; child of OS class
+class HPF(OS):
     pass
 
 
 
-# Round Robin OS class
-class RR:
+# Round Robin class; child of OS class
+class RR(OS):
     pass
 
 
@@ -35,5 +41,7 @@ def get_user_input():
         content = content[3:]
 
     print(triples)
+
+    OS.process_list = triples
 
 get_user_input()
