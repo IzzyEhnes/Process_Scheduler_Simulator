@@ -36,6 +36,7 @@ class OS:
 
 
     def print_wait_time(self):
+        self.compute_wait_times()
         process_num = 0
         for process in self.process_list:
             print(self.__name__ + " wait of p" + str(process_num + 1) + " = " + str(self.statistics[0][process_num]))
@@ -59,6 +60,7 @@ class OS:
 
 
     def print_turn_around_times(self):
+        self.compute_turn_around_time()
         process_num = 0
         for process in self.process_list:
             print(self.__name__ + " turn-around time for p" + str(process_num + 1) + " = " + str(self.statistics[1][process_num]))
@@ -102,10 +104,8 @@ def run_simulation():
     print("Process list in FCFS order as entered:")
     FCFS.print_process_list()
     print("End of list.\n")
-    FCFS.compute_wait_times()
     FCFS.print_wait_time(FCFS)
     FCFS.print_avg_wait_time(FCFS)
-    FCFS.compute_turn_around_time()
     FCFS.print_turn_around_times(FCFS)
     FCFS.print_avg_turn_around_time(FCFS)
 
