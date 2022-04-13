@@ -1,4 +1,4 @@
-import sys
+TIME_QUANTUM_MAX = 5
 
 # Parent class
 class OS:
@@ -10,14 +10,14 @@ class OS:
 
     def print_process_list(self):
         for line in self.process_list:
-            print(' '.join(line[1:]))
+            print(' '.join(line))
 
 
     def compute_wait_times(self):
         wait_time = 0
         for process in self.process_list:
             self.statistics[0].append(wait_time)
-            wait_time += int(process[2])
+            wait_time += int(process[1])
 
 
     def print_wait_time(self):
@@ -40,7 +40,7 @@ class OS:
     def compute_turn_around_time(self):
         turn_around_time = 0
         for process in self.process_list:
-            turn_around_time += int(process[2])
+            turn_around_time += int(process[1])
             self.statistics[1].append(turn_around_time)
 
 
@@ -90,7 +90,7 @@ class HPF(OS):
 
     def sort_list(self):
         temp_list = list(self.process_list)
-        temp_list.sort(key=lambda priority: priority[3])
+        temp_list.sort(key=lambda priority: priority[2])
         self.process_list = tuple(temp_list)
 
 
@@ -101,6 +101,8 @@ class RR(OS):
         self.process_list = process_list
         self.statistics = [[], [], 0.0]
 
+    
+
 
 def get_user_input() -> list:
     print("Enter triples: process id, time in ms, and priority (Ctrl-D to end input):")
@@ -110,13 +112,10 @@ def get_user_input() -> list:
     print("and so on ...")
 
     content = []
-    process_number = 1
     while True:
         try:
             line = input()
             line = " ".join(line.split()).split()
-            line.insert(0, str(process_number))
-            process_number += 1
         except EOFError:
             break
         content.append(line)
