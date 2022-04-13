@@ -110,6 +110,7 @@ def run_simulation():
     OS.get_user_input()
     print()
 
+    # Simulate FCFS OS
     print("Process list in FCFS order as entered:")
     FCFS.print_process_list()
     print("End of list.\n")
@@ -118,6 +119,14 @@ def run_simulation():
     FCFS.print_turn_around_times(FCFS)
     FCFS.print_avg_turn_around_time(FCFS)
     FCFS.print_throughput(FCFS)
+    print("<><> end FCFS <><>\n")
+
+    # Simulate HPF OS
+    print("Process list in HPF order:")
+    HPF.sort_list()
+    HPF.print_process_list()
+    print("End of list.\n")
+
 
 
 run_simulation()
