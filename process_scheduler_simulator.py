@@ -41,6 +41,20 @@ class OS:
         return round(avg_wait, 6)
 
 
+    def compute_turn_around_time():
+        turn_around_time = 0
+        for process in OS.process_list:
+            turn_around_time += int(process[1])
+            OS.statistics[1].append(turn_around_time)
+
+
+    def print_turn_around_times(self):
+        process_num = 0
+        for process in self.process_list:
+            print(self.__name__ + " turn-around time for p" + str(process_num + 1) + " = " + str(self.statistics[1][process_num]))
+            process_num += 1
+
+
 
 # First Come First Serve class; child of OS class
 class FCFS(OS):
@@ -77,7 +91,8 @@ def run_simulation():
     FCFS.compute_wait_times()
     FCFS.print_wait_time()
     print("average wait for " + str(len(FCFS.process_list)) + " processes = " + str(FCFS.compute_avg_wait_time()))
-
+    FCFS.compute_turn_around_time()
+    FCFS.print_turn_around_times(FCFS)
 
 
 run_simulation()
