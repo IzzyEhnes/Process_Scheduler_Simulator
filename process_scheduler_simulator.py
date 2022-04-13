@@ -23,27 +23,29 @@ class OS:
         OS.process_list = triples
 
 
-    def print_process_list():
-        for line in OS.process_list:
+    def print_process_list(self):
+        for line in self.process_list:
             print(' '.join(line))
 
 
-    def compute_wait_times():
+    def compute_wait_times(self):
         wait_time = 0
-        for process in OS.process_list:
-            OS.statistics[0].append(wait_time)
+        for process in self.process_list:
+            self.statistics[0].append(wait_time)
+            print(wait_time)
             wait_time += int(process[1])
+        print(self.statistics)
 
 
     def print_wait_time(self):
         self.compute_wait_times()
         process_num = 0
         for process in self.process_list:
-            print(self.__name__ + " wait of p" + str(process_num + 1) + " = " + str(self.statistics[0][process_num]))
+            print(type(self).__name__ + " wait of p" + str(process_num + 1) + " = " + str(self.statistics[0][process_num]))
             process_num += 1
 
 
-    def compute_avg_wait_time() -> float:
+    def compute_avg_wait_time(self) -> float:
         avg_wait = sum(OS.statistics[0]) / len(OS.statistics[0])
         return round(avg_wait, 6)
 
@@ -52,7 +54,7 @@ class OS:
         print("average wait for " + str(len(self.process_list)) + " processes = " + str(self.compute_avg_wait_time()))
 
 
-    def compute_turn_around_time():
+    def compute_turn_around_time(self):
         turn_around_time = 0
         for process in OS.process_list:
             turn_around_time += int(process[1])
@@ -63,11 +65,11 @@ class OS:
         self.compute_turn_around_time()
         process_num = 0
         for process in self.process_list:
-            print(self.__name__ + " turn-around time for p" + str(process_num + 1) + " = " + str(self.statistics[1][process_num]))
+            print(type(self).__name__ + " turn-around time for p" + str(process_num + 1) + " = " + str(self.statistics[1][process_num]))
             process_num += 1
 
     
-    def compute_avg_turn_around_times() -> float:
+    def compute_avg_turn_around_times(self) -> float:
         avg_wait = sum(OS.statistics[1]) / len(OS.statistics[1])
         return round(avg_wait, 6)
 
@@ -82,8 +84,8 @@ class OS:
 
     
     def print_throughput(self):
-        self.compute_throughput(self)
-        print(self.__name__ + " throughput for " + str(len(self.process_list)) + " processes = " + str(self.statistics[2]) + " process/ms")
+        self.compute_throughput()
+        print(type(self).__name__ + " throughput for " + str(len(self.process_list)) + " processes = " + str(self.statistics[2]) + " process/ms")
 
 
 
@@ -95,7 +97,7 @@ class FCFS(OS):
 
 # High Priority First class; child of OS class
 class HPF(OS):
-    def sort_list():
+    def sort_list(self):
         HPF.process_list.sort(key=lambda priority: priority[2])
 
 
@@ -111,21 +113,30 @@ def run_simulation():
     print()
 
     # Simulate FCFS OS
+    fcfs = FCFS()
     print("Process list in FCFS order as entered:")
-    FCFS.print_process_list()
+    fcfs.print_process_list()
     print("End of list.\n")
-    FCFS.print_wait_time(FCFS)
-    FCFS.print_avg_wait_time(FCFS)
-    FCFS.print_turn_around_times(FCFS)
-    FCFS.print_avg_turn_around_time(FCFS)
-    FCFS.print_throughput(FCFS)
+    fcfs.print_wait_time()
+    fcfs.print_avg_wait_time()
+    fcfs.print_turn_around_times()
+    fcfs.print_avg_turn_around_time()
+    fcfs.print_throughput()
     print("<><> end FCFS <><>\n")
 
     # Simulate HPF OS
+    hpf = HPF()
+    print(hpf.statistics)
     print("Process list in HPF order:")
-    HPF.sort_list()
-    HPF.print_process_list()
+    hpf.sort_list()
+    hpf.print_process_list()
     print("End of list.\n")
+    hpf.print_wait_time()
+    hpf.print_avg_wait_time()
+    hpf.print_turn_around_times()
+    hpf.print_avg_turn_around_time()
+    hpf.print_throughput()
+    print("<><> end HPF <><>\n")
 
 
 
