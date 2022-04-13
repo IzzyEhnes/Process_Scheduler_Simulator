@@ -75,6 +75,15 @@ class OS:
     def print_avg_turn_around_time(self):
         print("average turn-around time for " + str(len(self.process_list)) + " processes = " + str(self.compute_avg_turn_around_times()))
 
+    
+    def compute_throughput(self) -> float:
+        num_processes = len(self.process_list)
+        self.statistics[2] = round(num_processes / self.statistics[1][num_processes - 1], 6)
+
+    
+    def print_throughput(self):
+        self.compute_throughput(self)
+        print(self.__name__ + " throughput for " + str(len(self.process_list)) + " processes = " + str(self.statistics[2]) + " process/ms")
 
 
 
@@ -108,6 +117,7 @@ def run_simulation():
     FCFS.print_avg_wait_time(FCFS)
     FCFS.print_turn_around_times(FCFS)
     FCFS.print_avg_turn_around_time(FCFS)
+    FCFS.print_throughput(FCFS)
 
 
 run_simulation()
