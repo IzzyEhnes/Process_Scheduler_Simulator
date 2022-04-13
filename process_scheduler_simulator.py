@@ -35,6 +35,12 @@ class OS:
             wait_time += int(process[1])
 
 
+    def compute_avg_wait_time() -> float:
+        avg_wait = sum(OS.statistics[0]) / len(OS.statistics[0])
+        
+        return round(avg_wait, 6)
+
+
 
 # First Come First Serve class; child of OS class
 class FCFS(OS):
@@ -70,6 +76,7 @@ def run_simulation():
 
     FCFS.compute_wait_times()
     FCFS.print_wait_time()
+    print("average wait for " + str(len(FCFS.process_list)) + " processes = " + str(FCFS.compute_avg_wait_time()))
 
 
 
