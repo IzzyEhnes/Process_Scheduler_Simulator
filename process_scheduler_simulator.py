@@ -22,21 +22,27 @@ class OS:
 
         OS.process_list = triples
 
+
     def print_process_list():
         for line in OS.process_list:
             print(' '.join(line))
 
 
+    def compute_wait_times():
+        wait_time = 0
+        for process in OS.process_list:
+            OS.statistics[0].append(wait_time)
+            wait_time += int(process[1])
+
+
 
 # First Come First Serve class; child of OS class
 class FCFS(OS):
-    def compute_wait_times():
-        wait_time = 0
+    def print_wait_time():
+        process_num = 0
         for process in FCFS.process_list:
-            FCFS.statistics[0].append(wait_time)
-            wait_time += int(process[1])
-
-        print(FCFS.statistics)
+            print("FCFS wait time for p" + str(process_num + 1) + " = " + str(FCFS.statistics[0][process_num]))
+            process_num += 1
 
 
 
@@ -63,6 +69,7 @@ def run_simulation():
     print("")
 
     FCFS.compute_wait_times()
+    FCFS.print_wait_time()
 
 
 
