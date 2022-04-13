@@ -3,31 +3,10 @@ import sys
 # Parent class
 class OS:
     
-    def __init__(self):
+    def __init__(self, process_list):
         # wait time per process, turn around time per process, throughput
+        self.process_list = process_list
         self.statistics = [[], [], 0.0]
-
-    def get_user_input():
-        print("Enter triples: process id, time in ms, and priority (Ctrl-D to end input):")
-        print("For example: \n1 12 0\n3  9 1\n2 99 9")
-        print("process 1 needs 12 ms and has priority 0, very high,")
-        print("process 3 needs  9 ms and has priority 1.")
-        print("and so on ...")
-
-        content = []
-        process_number = 1
-        while True:
-            try:
-                line = input()
-                line = " ".join(line.split()).split()
-                line.insert(0, str(process_number))
-                process_number += 1
-            except EOFError:
-                break
-            content.append(line)
-
-        OS.process_list = content
-
 
     def print_process_list(self):
         for line in self.process_list:
@@ -95,37 +74,62 @@ class OS:
 
 # First Come First Serve class; child of OS class
 class FCFS(OS):
-    def __init__(self):  
+    def __init__(self, process_list):
+        super().__init__(process_list)
+        self.process_list = process_list
         self.statistics = [[], [], 0.0]
-        OS.__init__(self)
 
 
 
 # High Priority First class; child of OS class
 class HPF(OS):
-    def __init__(self):  
+    def __init__(self, process_list):  
+        super().__init__(process_list)
+        self.process_list = process_list
         self.statistics = [[], [], 0.0]
-        OS.__init__(self)
 
     def sort_list(self):
-        self.process_list.sort(key=lambda priority: priority[3])
-
+        temp_list = list(self.process_list)
+        temp_list.sort(key=lambda priority: priority[3])
+        self.process_list = tuple(temp_list)
 
 
 # Round Robin class; child of OS class
 class RR(OS):
-    def __init__(self):  
+    def __init__(self, process_list):
+        super().__init__(process_list)
+        self.process_list = process_list
         self.statistics = [[], [], 0.0]
-        OS.__init__(self)
 
+
+def get_user_input() -> list:
+    print("Enter triples: process id, time in ms, and priority (Ctrl-D to end input):")
+    print("For example: \n1 12 0\n3  9 1\n2 99 9")
+    print("process 1 needs 12 ms and has priority 0, very high,")
+    print("process 3 needs  9 ms and has priority 1.")
+    print("and so on ...")
+
+    content = []
+    process_number = 1
+    while True:
+        try:
+            line = input()
+            line = " ".join(line.split()).split()
+            line.insert(0, str(process_number))
+            process_number += 1
+        except EOFError:
+            break
+        content.append(line)
+
+    return tuple(content)
 
 
 def run_simulation():
-    OS.get_user_input()
+    process_list = get_user_input()
     print()
 
     # Simulate FCFS OS
-    fcfs = FCFS()
+    fcfs = FCFS(process_list)
     print("Process list in FCFS order as entered:")
     fcfs.print_process_list()
     print("End of list.\n")
@@ -137,7 +141,7 @@ def run_simulation():
     print("<><> end FCFS <><>\n")
 
     # Simulate HPF OS
-    hpf = HPF()
+    hpf = HPF(process_list)
     print("Process list in HPF order:")
     hpf.sort_list()
     hpf.print_process_list()
@@ -149,6 +153,10 @@ def run_simulation():
     hpf.print_throughput()
     print("<><> end HPF <><>\n")
 
-
+    # Simulate RR OS
+    rr = RR(process_list)
+    print("Process list for RR in order entered:")
+    rr.print_process_list()
+    print("End of list.\n")
 
 run_simulation()
