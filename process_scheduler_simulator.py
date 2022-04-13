@@ -44,7 +44,6 @@ class OS:
 
     def compute_avg_wait_time() -> float:
         avg_wait = sum(OS.statistics[0]) / len(OS.statistics[0])
-        
         return round(avg_wait, 6)
 
     
@@ -64,6 +63,16 @@ class OS:
         for process in self.process_list:
             print(self.__name__ + " turn-around time for p" + str(process_num + 1) + " = " + str(self.statistics[1][process_num]))
             process_num += 1
+
+    
+    def compute_avg_turn_around_times() -> float:
+        avg_wait = sum(OS.statistics[1]) / len(OS.statistics[1])
+        return round(avg_wait, 6)
+
+
+    def print_avg_turn_around_time(self):
+        print("average turn-around time for " + str(len(self.process_list)) + " processes = " + str(self.compute_avg_turn_around_times()))
+
 
 
 
@@ -92,14 +101,13 @@ def run_simulation():
 
     print("Process list in FCFS order as entered:")
     FCFS.print_process_list()
-
-    print("")
-
+    print("End of list.\n")
     FCFS.compute_wait_times()
     FCFS.print_wait_time(FCFS)
     FCFS.print_avg_wait_time(FCFS)
     FCFS.compute_turn_around_time()
     FCFS.print_turn_around_times(FCFS)
+    FCFS.print_avg_turn_around_time(FCFS)
 
 
 run_simulation()
