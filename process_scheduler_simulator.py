@@ -2,7 +2,9 @@ import sys
 
 # Parent class
 class OS:
-    process_list = []
+    def print_process_list():
+        for line in OS.process_list:
+            print(' '.join(line))
 
 
 
@@ -14,7 +16,8 @@ class FCFS(OS):
 
 # High Priority First class; child of OS class
 class HPF(OS):
-    pass
+    def sort_list():
+        HPF.process_list.sort(key=lambda priority: priority[2])
 
 
 
@@ -33,15 +36,17 @@ def get_user_input():
 
     content = sys.stdin.read()
     content = " ".join(content.split()).split()
-    print(content)
 
     triples = list()
     while content:
         triples.append(content[:3])
         content = content[3:]
 
-    print(triples)
-
     OS.process_list = triples
 
+
+
 get_user_input()
+print()
+HPF.sort_list()
+HPF.print_process_list()
