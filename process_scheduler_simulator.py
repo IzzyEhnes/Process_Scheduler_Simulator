@@ -106,10 +106,13 @@ class RR(OS):
         self.statistics = [[], [], 0.0]
 
 
+    # Find and return the ID of the process that will take the least amount of time
     def find_quickest_process_id(self, ready_queue):
         return min(ready_queue, key=lambda x: x[1])[0]
 
 
+    # Checks whether or not the process that is initially found to take the least amount of time 
+    # has a remaining time that is greater than the quantum
     def quickest_process_greater_than_quantum(self, ready_queue, quickest_process_id, quantum) -> bool:
         for process in ready_queue:
             if process[0] == quickest_process_id:
@@ -117,40 +120,53 @@ class RR(OS):
 
     
     def complete_RR_schedule(self):
-        process_list_immutable = tuple(self.process_list)
-        
-        #quantum = random.randrange(1, TIME_QUANTUM_MAX + 1)
-        quantum_max = 6
-        #ready_queue = list(self.process_list)
-        #turn_around_time = [0] * len(self.process_list)
+
+        quantum_max = random.randrange(1, TIME_QUANTUM_MAX + 1)  #  max number of ms a process is able to execute
 
         for quantum in range(1, quantum_max):
-            for overhead in range(0, quantum + 1):
+            for overhead in range(0, quantum + 1):  # overhead is cost (in ms) to switch to a different process
                 time = 0
-                ready_queue = copy.deepcopy(list(self.process_list))
-                turn_around_time = [0] * len(self.process_list)
+                ready_queue = copy.deepcopy(list(self.process_list))  # queue of processes that have not yet completed
+                turn_around_time = [0] * len(self.process_list)  # a list to store the span of time each process takes to complete
+
                 while len(ready_queue) != 0:
                     quickest_process_id = self.find_quickest_process_id(ready_queue)
+
+                    # for each process that hasn't yet completed, allow it to execute for quantum ms;
+                    # repeat for as many rounds as it takes until the process that is initially found to take the 
+                    # least amount of time has a remaining time that is <= the quantum
                     while self.quickest_process_greater_than_quantum(ready_queue, quickest_process_id, quantum):
                         for process_num in range(0, len(ready_queue)):
                             temp_process = copy.deepcopy(ready_queue[0])
                             ready_queue.pop(0)
                             temp_process[1] -= quantum
                             ready_queue.append(temp_process)
+
                             time += (quantum + overhead)
+
+                    # loop through processes (but not completing a full round), allowing them to execute for quantum ms
+                    # until the process that is initially found to take the least amount of time is at the front of the queue
                     while quickest_process_id != ready_queue[0][0]:
+                        # if the process at the front of the queue will complete before the process that is initially found 
+                        # to take the least amount of time, let it complete and remove it from the ready queue
                         if (ready_queue[0][1] - quantum <= 0):
                             time += ready_queue[0][1]
+
                             turn_around_time[ready_queue[0][0] - 1] = time
                             ready_queue.pop(0)
+                            
                             time += overhead
+                            
+                        # allow the process at the front of the queue to execute for quantum ms and move it to end of ready queue
                         else:
                             temp_process = copy.deepcopy(ready_queue[0])
                             ready_queue.pop(0)
                             temp_process[1] -= quantum
                             ready_queue.append(temp_process)
+
                             time += (quantum + overhead)
                     
+                    # let the process that is initially found to take the least amount of time complete and remove it from queue 
                     time += ready_queue[0][1]
                     turn_around_time[ready_queue[0][0] - 1] = time
                     ready_queue.pop(0)
@@ -160,7 +176,9 @@ class RR(OS):
 
 
     def print_RR_schedule(self, quantum, overhead, turn_around_time):
+
         print("preemptive RR schedule, quantum = ", quantum, " overhead = ", overhead)
+
         for process in range(0, len(turn_around_time)):
             print("RR TA time for finished p" + str(process + 1) + " = " + str(turn_around_time[process]) + 
                     ", needed: " + str(self.process_list[process][1]) + " ms, and: " + 
