@@ -6,17 +6,19 @@ TIME_QUANTUM_MAX = 5
 
 # Parent class
 class OS:
-    
     def __init__(self, process_list):
         # wait time per process, turn around time per process, throughput
         self.process_list = process_list
         self.statistics = [[], [], 0.0]
 
+
+    # Prints the process list with each process on a new line
     def print_process_list(self):
         for line in self.process_list:
             print(*line)
 
 
+    # Computes the total time a process is in the ready queue
     def compute_wait_times(self):
         wait_time = 0
         for process in self.process_list:
@@ -24,6 +26,7 @@ class OS:
             wait_time += int(process[1])
 
 
+    # Prints the wait time for each process
     def print_wait_time(self):
         self.compute_wait_times()
         process_num = 0
@@ -32,15 +35,18 @@ class OS:
             process_num += 1
 
 
+    # Computes and returns the average wait time for all of the processes
     def compute_avg_wait_time(self) -> float:
         avg_wait = sum(self.statistics[0]) / len(self.statistics[0])
         return round(avg_wait, 6)
 
     
+    # Prints the average wait time for all of the processes
     def print_avg_wait_time(self):
         print("average wait for " + str(len(self.process_list)) + " processes = " + str(self.compute_avg_wait_time()))
 
 
+    # Computes the span of time from the moment of submission to completion time for each process
     def compute_turn_around_time(self):
         turn_around_time = 0
         for process in self.process_list:
@@ -48,6 +54,7 @@ class OS:
             self.statistics[1].append(turn_around_time)
 
 
+    # Prints the turn around time for each process
     def print_turn_around_times(self):
         self.compute_turn_around_time()
         process_num = 0
@@ -56,20 +63,24 @@ class OS:
             process_num += 1
 
     
+    # Computes and returns the average turn around time for all of the processes
     def compute_avg_turn_around_times(self) -> float:
         avg_wait = sum(self.statistics[1]) / len(self.statistics[1])
         return round(avg_wait, 6)
 
 
+    # Prints the average turn around time for all of the processes
     def print_avg_turn_around_time(self):
         print("average turn-around time for " + str(len(self.process_list)) + " processes = " + str(self.compute_avg_turn_around_times()))
 
     
+    # Computes and returns the number of processes completed per time unit (ms)
     def compute_throughput(self) -> float:
         num_processes = len(self.process_list)
         self.statistics[2] = round(num_processes / self.statistics[1][num_processes - 1], 6)
 
     
+    # Prints the throughput for all of the processes
     def print_throughput(self):
         self.compute_throughput()
         print(type(self).__name__ + " throughput for " + str(len(self.process_list)) + " processes = " + str(self.statistics[2]) + " process/ms")
@@ -92,10 +103,13 @@ class HPF(OS):
         self.process_list = process_list
         self.statistics = [[], [], 0.0]
 
+
+    # Sorts the processes in order of priority
     def sort_list(self):
         temp_list = list(self.process_list)
         temp_list.sort(key=lambda priority: priority[2])
         self.process_list = tuple(temp_list)
+
 
 
 # Round Robin class; child of OS class
@@ -119,6 +133,7 @@ class RR(OS):
                 return process[1] > quantum
 
     
+    # Runs the preemptive RR schedule
     def complete_RR_schedule(self):
 
         quantum_max = random.randrange(1, TIME_QUANTUM_MAX + 1)  #  max number of ms a process is able to execute
@@ -175,6 +190,7 @@ class RR(OS):
                 self.print_RR_schedule(quantum, overhead, turn_around_time)
 
 
+    # Prints the RR schedule's current quantum, overhead, and the turn around times, throughput, and average turn around time for the processes
     def print_RR_schedule(self, quantum, overhead, turn_around_time):
 
         print("preemptive RR schedule, quantum = ", quantum, " overhead = ", overhead)
@@ -185,14 +201,18 @@ class RR(OS):
                     str(math.ceil(self.process_list[process][1] / quantum)) + " time slices.")
 
         throughput = round((len(turn_around_time) / max(turn_around_time)), 7)
-        print("RR Throughput, " + str(len(turn_around_time)) + " processes, with q: " + str(quantum) + ", o: " + str(overhead) + ", is: " + str(throughput) + " p/ms, or " + str(throughput * 1000) + " p/us")
+        print("RR Throughput, " + str(len(turn_around_time)) + " processes, with q: " + str(quantum) + ", o: " + str(overhead) + 
+                ", is: " + str(throughput) + " p/ms, or " + str(throughput * 1000) + " p/us")
         
         average_ta = round((sum(turn_around_time) / len(turn_around_time)), 4)
-        print("Average RR TA, " + str(len(turn_around_time)) + " processes, with q: " + str(quantum) + ", o: " + str(overhead) + ", is: " + str(average_ta))
+        print("Average RR TA, " + str(len(turn_around_time)) + " processes, with q: " + str(quantum) + ", o: " + str(overhead) + 
+                ", is: " + str(average_ta))
+
         print()
             
 
 
+# Returns the processes input by the user (in the form of process id, time (in ms), and priority)
 def get_user_input() -> list:
     print("Enter triples: process id, time in ms, and priority (Ctrl-D to end input):")
     print("For example: \n1 12 0\n3  9 1\n2 99 9")
@@ -214,6 +234,7 @@ def get_user_input() -> list:
 
 
 
+# Runs the simulation for a FCFS OS, HPF OS, and RR OS, after getting user inputted processes
 def run_simulation():
     process_list = get_user_input()
     print()
@@ -250,5 +271,7 @@ def run_simulation():
     print("End of list.\n")
     rr.complete_RR_schedule()
     print("<><> end preemptive RR schedule <><>")
+
+
 
 run_simulation()
