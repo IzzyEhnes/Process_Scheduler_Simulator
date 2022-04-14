@@ -43,7 +43,7 @@ class OS:
     
     # Prints the average wait time for all of the processes
     def print_avg_wait_time(self):
-        print("average wait for " + str(len(self.process_list)) + " processes = " + str(self.compute_avg_wait_time()))
+        print("average wait time for " + str(len(self.process_list)) + " processes = " + str(self.compute_avg_wait_time()))
 
 
     # Computes the span of time from the moment of submission to completion time for each process
@@ -195,14 +195,23 @@ class RR(OS):
 
         print("preemptive RR schedule, quantum = ", quantum, " overhead = ", overhead)
 
-        for process in range(0, len(turn_around_time)):
-            print("RR TA time for finished p" + str(process + 1) + " = " + str(turn_around_time[process]) + 
-                    ", needed: " + str(self.process_list[process][1]) + " ms, and: " + 
-                    str(ceil(self.process_list[process][1] / quantum)) + " time slices.")
+        process_list_with_TA = deepcopy(self.process_list)
 
-        throughput = round((len(turn_around_time) / max(turn_around_time)), 7)
+        # add turn around time to associated process
+        for process_id in range(0, len(process_list_with_TA)):
+            process_list_with_TA[process_id].append(turn_around_time[process_id])
+
+        process_list_with_TA.sort(key=lambda ta_time: ta_time[3])  # sort list by turn around time
+
+        for process in range(0, len(turn_around_time)):
+            print("RR TA time for finished p" + str(process_list_with_TA[process][0]) + " = " + str(process_list_with_TA[process][3]) + 
+                    ", needed: " + str(process_list_with_TA[process][1]) + " ms, and: " + 
+                    str(ceil(process_list_with_TA[process][1] / quantum)) + " time slices.")
+
+        throughput_ms = round((len(turn_around_time) / max(turn_around_time)), 7)
+        throughput_us = round((throughput_ms * 1000), 4)
         print("RR Throughput, " + str(len(turn_around_time)) + " processes, with q: " + str(quantum) + ", o: " + str(overhead) + 
-                ", is: " + str(throughput) + " p/ms, or " + str(throughput * 1000) + " p/us")
+                ", is: " + str(throughput_ms) + " p/ms, or " + str(throughput_us) + " p/us")
         
         average_ta = round((sum(turn_around_time) / len(turn_around_time)), 4)
         print("Average RR TA, " + str(len(turn_around_time)) + " processes, with q: " + str(quantum) + ", o: " + str(overhead) + 
@@ -230,7 +239,7 @@ def get_user_input() -> list:
         line = list(map(int, line))
         content.append(line)
 
-    return tuple(content)
+    return list(content)
 
 
 
@@ -249,7 +258,7 @@ def run_simulation():
     fcfs.print_turn_around_times()
     fcfs.print_avg_turn_around_time()
     fcfs.print_throughput()
-    print("<><> end FCFS <><>\n")
+    print("<><> end FCFS schedule <><>\n")
 
     # Simulate HPF OS
     hpf = HPF(process_list)
@@ -262,7 +271,7 @@ def run_simulation():
     hpf.print_turn_around_times()
     hpf.print_avg_turn_around_time()
     hpf.print_throughput()
-    print("<><> end HPF <><>\n")
+    print("<><> end HPF schedule <><>\n")
 
     # Simulate RR OS
     rr = RR(process_list)
