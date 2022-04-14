@@ -138,7 +138,7 @@ class RR(OS):
 
         quantum_max = randrange(2, TIME_QUANTUM_MAX + 1)  #  max number of ms a process is able to execute
 
-        for quantum in range(1, quantum_max):
+        for quantum in range(1, quantum_max + 1):
             for overhead in range(0, quantum + 1):  # overhead is cost (in ms) to switch to a different process
                 time = 0
                 ready_queue = deepcopy(list(self.process_list))  # queue of processes that have not yet completed
