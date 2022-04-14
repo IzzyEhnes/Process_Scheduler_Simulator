@@ -104,7 +104,7 @@ class RR(OS):
         self.statistics = [[], [], 0.0]
 
     
-    def complete_round(self):
+    def complete_RR_schedule(self):
         time_quantum = random.randrange(0, TIME_QUANTUM_MAX)
         ready_queue = list(self.process_list)
 
@@ -176,6 +176,6 @@ def run_simulation():
     print("Process list for RR in order entered:")
     rr.print_process_list()
     print("End of list.\n")
-    rr.complete_round()
+    rr.complete_RR_schedule()
 
 run_simulation()
