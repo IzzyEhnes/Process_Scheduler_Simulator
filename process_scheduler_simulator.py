@@ -183,6 +183,10 @@ class RR(OS):
             print("RR TA time for finished p" + str(process + 1) + " = " + str(turn_around_time[process]) + 
                     ", needed: " + str(self.process_list[process][1]) + " ms, and: " + 
                     str(math.ceil(self.process_list[process][1] / quantum)) + " time slices.")
+
+        throughput = round((len(turn_around_time) / max(turn_around_time)), 7)
+        print("RR Throughput, " + str(len(turn_around_time)) + " processes, with q: " + str(quantum) + ", o: " + str(overhead) + ", is: " + str(throughput) + " p/ms, or " + str(throughput * 1000) + " p/us")
+
         print()
             
 
@@ -203,8 +207,6 @@ def get_user_input() -> list:
             break
         line = list(map(int, line))
         content.append(line)
-
-    print(content)
 
     return tuple(content)
 
