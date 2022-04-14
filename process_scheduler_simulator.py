@@ -114,25 +114,26 @@ class RR(OS):
 
     
     def complete_RR_schedule(self):
-        time_quantum = random.randrange(0, TIME_QUANTUM_MAX)
+        #quantum = random.randrange(0, TIME_QUANTUM_MAX)
+        quantum = 1
         ready_queue = list(self.process_list)
-        turn_around_time = [0, 0, 0]
+
+        turn_around_time = [0] * len(self.process_list)
         
-        q = 5
-        overhead = 5
+        overhead = 0
         time = 0
         while len(ready_queue) != 0:
             quickest_process_id = self.find_quickest_process_id(ready_queue)
-            while self.quickest_process_greater_than_quantum(ready_queue, quickest_process_id, q):
+            while self.quickest_process_greater_than_quantum(ready_queue, quickest_process_id, quantum):
                 for process_num in range(0, len(ready_queue)):
                     temp_process = ready_queue[0]
                     ready_queue.pop(0)
-                    temp_process[1] -= q
+                    temp_process[1] -= quantum
                     ready_queue.append(temp_process)
-                    time += (q + overhead)
+                    time += (quantum + overhead)
 
             while quickest_process_id != ready_queue[0][0]:
-                if (ready_queue[0][1] - q <= 0):
+                if (ready_queue[0][1] - quantum <= 0):
                     time += ready_queue[0][1]
                     turn_around_time[ready_queue[0][0] - 1] = time
                     ready_queue.pop(0)
@@ -140,9 +141,9 @@ class RR(OS):
                 else:
                     temp_process = ready_queue[0]
                     ready_queue.pop(0)
-                    temp_process[1] -= q
+                    temp_process[1] -= quantum
                     ready_queue.append(temp_process)
-                    time += (q + overhead)
+                    time += (quantum + overhead)
             
             time += ready_queue[0][1]
             turn_around_time[ready_queue[0][0] - 1] = time
