@@ -1,3 +1,5 @@
+import random
+
 TIME_QUANTUM_MAX = 5
 
 # Parent class
@@ -102,6 +104,44 @@ class RR(OS):
         self.statistics = [[], [], 0.0]
 
     
+    def complete_round(self):
+        time_quantum = random.randrange(0, TIME_QUANTUM_MAX)
+        ready_queue = list(self.process_list)
+
+        print(ready_queue)
+        
+        q = 1
+        o = 0
+        time = 0
+        while len(ready_queue) != 0:
+            quickest_process = min(ready_queue, key=lambda x: x[1])
+            rounds = quickest_process[1] - 1
+            for round in range(0, rounds):
+                #print("Round ",round)
+                for process_num in range(0, len(ready_queue)):
+                    temp_process = ready_queue[0]
+                    #print("temp process: ", temp_process)
+                    ready_queue.pop(0)
+                    temp_process[1] -= 1
+                    ready_queue.append(temp_process)
+                    time += 1
+                    #print(ready_queue)
+                #print()
+
+            while quickest_process[0] != ready_queue[0][0]:
+                temp_process = ready_queue[0]
+                ready_queue.pop(0)
+                temp_process[1] -= 1
+                ready_queue.append(temp_process)
+                time += 1
+            
+            ready_queue.pop(0)
+            time += 1
+
+            print(time)
+
+            print(ready_queue)
+            
 
 
 def get_user_input() -> list:
@@ -126,39 +166,16 @@ def get_user_input() -> list:
     return tuple(content)
 
 
+
 def run_simulation():
     process_list = get_user_input()
     print()
-
-    # Simulate FCFS OS
-    fcfs = FCFS(process_list)
-    print("Process list in FCFS order as entered:")
-    fcfs.print_process_list()
-    print("End of list.\n")
-    fcfs.print_wait_time()
-    fcfs.print_avg_wait_time()
-    fcfs.print_turn_around_times()
-    fcfs.print_avg_turn_around_time()
-    fcfs.print_throughput()
-    print("<><> end FCFS <><>\n")
-
-    # Simulate HPF OS
-    hpf = HPF(process_list)
-    print("Process list in HPF order:")
-    hpf.sort_list()
-    hpf.print_process_list()
-    print("End of list.\n")
-    hpf.print_wait_time()
-    hpf.print_avg_wait_time()
-    hpf.print_turn_around_times()
-    hpf.print_avg_turn_around_time()
-    hpf.print_throughput()
-    print("<><> end HPF <><>\n")
 
     # Simulate RR OS
     rr = RR(process_list)
     print("Process list for RR in order entered:")
     rr.print_process_list()
     print("End of list.\n")
+    rr.complete_round()
 
 run_simulation()
