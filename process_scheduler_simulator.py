@@ -218,11 +218,37 @@ def run_simulation():
     process_list = get_user_input()
     print()
 
+    # Simulate FCFS OS
+    fcfs = FCFS(process_list)
+    print("Process list in FCFS order as entered:")
+    fcfs.print_process_list()
+    print("End of list.\n")
+    fcfs.print_wait_time()
+    fcfs.print_avg_wait_time()
+    fcfs.print_turn_around_times()
+    fcfs.print_avg_turn_around_time()
+    fcfs.print_throughput()
+    print("<><> end FCFS <><>\n")
+
+    # Simulate HPF OS
+    hpf = HPF(process_list)
+    print("Process list in HPF order:")
+    hpf.sort_list()
+    hpf.print_process_list()
+    print("End of list.\n")
+    hpf.print_wait_time()
+    hpf.print_avg_wait_time()
+    hpf.print_turn_around_times()
+    hpf.print_avg_turn_around_time()
+    hpf.print_throughput()
+    print("<><> end HPF <><>\n")
+
     # Simulate RR OS
     rr = RR(process_list)
     print("Process list for RR in order entered:")
     rr.print_process_list()
     print("End of list.\n")
     rr.complete_RR_schedule()
+    print("<><> end preemptive RR schedule <><>")
 
 run_simulation()
