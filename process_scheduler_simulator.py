@@ -1,5 +1,6 @@
 import random
 import math
+import copy
 
 TIME_QUANTUM_MAX = 5
 
@@ -104,8 +105,10 @@ class RR(OS):
         self.process_list = process_list
         self.statistics = [[], [], 0.0]
 
+
     def find_quickest_process_id(self, ready_queue):
         return min(ready_queue, key=lambda x: x[1])[0]
+
 
     def quickest_process_greater_than_quantum(self, ready_queue, quickest_process_id, quantum) -> bool:
         for process in ready_queue:
@@ -113,20 +116,21 @@ class RR(OS):
                 return process[1] > quantum
 
     
+    
     def complete_RR_schedule(self):
         #quantum = random.randrange(0, TIME_QUANTUM_MAX)
-        quantum = 1
+        quantum = 5
         ready_queue = list(self.process_list)
 
         turn_around_time = [0] * len(self.process_list)
         
-        overhead = 0
+        overhead = 2
         time = 0
         while len(ready_queue) != 0:
             quickest_process_id = self.find_quickest_process_id(ready_queue)
             while self.quickest_process_greater_than_quantum(ready_queue, quickest_process_id, quantum):
                 for process_num in range(0, len(ready_queue)):
-                    temp_process = ready_queue[0]
+                    temp_process = copy.deepcopy(ready_queue[0])
                     ready_queue.pop(0)
                     temp_process[1] -= quantum
                     ready_queue.append(temp_process)
@@ -139,7 +143,7 @@ class RR(OS):
                     ready_queue.pop(0)
                     time += overhead
                 else:
-                    temp_process = ready_queue[0]
+                    temp_process = copy.deepcopy(ready_queue[0])
                     ready_queue.pop(0)
                     temp_process[1] -= quantum
                     ready_queue.append(temp_process)
