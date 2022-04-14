@@ -10,7 +10,7 @@ class OS:
 
     def print_process_list(self):
         for line in self.process_list:
-            print(' '.join(line))
+            print(*line)
 
 
     def compute_wait_times(self):
@@ -118,7 +118,10 @@ def get_user_input() -> list:
             line = " ".join(line.split()).split()
         except EOFError:
             break
+        line = list(map(int, line))
         content.append(line)
+
+    print(content)
 
     return tuple(content)
 
