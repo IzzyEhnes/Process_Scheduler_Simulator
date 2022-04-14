@@ -186,7 +186,9 @@ class RR(OS):
 
         throughput = round((len(turn_around_time) / max(turn_around_time)), 7)
         print("RR Throughput, " + str(len(turn_around_time)) + " processes, with q: " + str(quantum) + ", o: " + str(overhead) + ", is: " + str(throughput) + " p/ms, or " + str(throughput * 1000) + " p/us")
-
+        
+        average_ta = round((sum(turn_around_time) / len(turn_around_time)), 4)
+        print("Average RR TA, " + str(len(turn_around_time)) + " processes, with q: " + str(quantum) + ", o: " + str(overhead) + ", is: " + str(average_ta))
         print()
             
 
