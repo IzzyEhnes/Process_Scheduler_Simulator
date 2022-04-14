@@ -1,4 +1,5 @@
 import random
+import math
 
 TIME_QUANTUM_MAX = 5
 
@@ -103,44 +104,50 @@ class RR(OS):
         self.process_list = process_list
         self.statistics = [[], [], 0.0]
 
+    def find_quickest_process_id(self, ready_queue):
+        return min(ready_queue, key=lambda x: x[1])[0]
+
+    def quickest_process_greater_than_quantum(self, ready_queue, quickest_process_id, quantum) -> bool:
+        for process in ready_queue:
+            if process[0] == quickest_process_id:
+                return process[1] > quantum
+
     
     def complete_RR_schedule(self):
         time_quantum = random.randrange(0, TIME_QUANTUM_MAX)
         ready_queue = list(self.process_list)
-
-        print(ready_queue)
+        turn_around_time = [0, 0, 0]
         
         q = 1
         o = 0
         time = 0
         while len(ready_queue) != 0:
-            quickest_process = min(ready_queue, key=lambda x: x[1])
-            rounds = quickest_process[1] - 1
-            for round in range(0, rounds):
-                #print("Round ",round)
+            quickest_process_id = self.find_quickest_process_id(ready_queue)
+            while self.quickest_process_greater_than_quantum(ready_queue, quickest_process_id, q):
                 for process_num in range(0, len(ready_queue)):
                     temp_process = ready_queue[0]
-                    #print("temp process: ", temp_process)
                     ready_queue.pop(0)
-                    temp_process[1] -= 1
+                    temp_process[1] -= q
                     ready_queue.append(temp_process)
-                    time += 1
-                    #print(ready_queue)
-                #print()
+                    time += q
 
-            while quickest_process[0] != ready_queue[0][0]:
-                temp_process = ready_queue[0]
-                ready_queue.pop(0)
-                temp_process[1] -= 1
-                ready_queue.append(temp_process)
-                time += 1
+            while quickest_process_id != ready_queue[0][0]:
+                if (ready_queue[0][1] - q >= 0 and ready_queue[1][0] != quickest_process_id):
+                    time += ready_queue[0][1]
+                    turn_around_time[ready_queue[0][0] - 1] = time
+                    ready_queue.pop(0)
+                else:
+                    temp_process = ready_queue[0]
+                    ready_queue.pop(0)
+                    temp_process[1] -= q
+                    ready_queue.append(temp_process)
+                    time += q
             
+            time += ready_queue[0][1]
+            turn_around_time[ready_queue[0][0] - 1] = time
             ready_queue.pop(0)
-            time += 1
 
-            print(time)
-
-            print(ready_queue)
+        print(turn_around_time)
             
 
 
