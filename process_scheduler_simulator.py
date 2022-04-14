@@ -117,11 +117,9 @@ class RR(OS):
         time_quantum = random.randrange(0, TIME_QUANTUM_MAX)
         ready_queue = list(self.process_list)
         turn_around_time = [0, 0, 0]
-
-        print(ready_queue)
         
-        q = 2
-        o = 0
+        q = 5
+        overhead = 5
         time = 0
         while len(ready_queue) != 0:
             quickest_process_id = self.find_quickest_process_id(ready_queue)
@@ -131,23 +129,25 @@ class RR(OS):
                     ready_queue.pop(0)
                     temp_process[1] -= q
                     ready_queue.append(temp_process)
-                    time += q
+                    time += (q + overhead)
 
             while quickest_process_id != ready_queue[0][0]:
                 if (ready_queue[0][1] - q <= 0):
                     time += ready_queue[0][1]
                     turn_around_time[ready_queue[0][0] - 1] = time
                     ready_queue.pop(0)
+                    time += overhead
                 else:
                     temp_process = ready_queue[0]
                     ready_queue.pop(0)
                     temp_process[1] -= q
                     ready_queue.append(temp_process)
-                    time += q
+                    time += (q + overhead)
             
             time += ready_queue[0][1]
             turn_around_time[ready_queue[0][0] - 1] = time
             ready_queue.pop(0)
+            time += overhead
 
         print(turn_around_time)
             
