@@ -116,45 +116,65 @@ class RR(OS):
                 return process[1] > quantum
 
     
-    
     def complete_RR_schedule(self):
-        #quantum = random.randrange(0, TIME_QUANTUM_MAX)
-        quantum = 5
-        ready_queue = list(self.process_list)
-
-        turn_around_time = [0] * len(self.process_list)
+        process_list_immutable = tuple(self.process_list)
         
-        overhead = 2
-        time = 0
-        while len(ready_queue) != 0:
-            quickest_process_id = self.find_quickest_process_id(ready_queue)
-            while self.quickest_process_greater_than_quantum(ready_queue, quickest_process_id, quantum):
-                for process_num in range(0, len(ready_queue)):
-                    temp_process = copy.deepcopy(ready_queue[0])
-                    ready_queue.pop(0)
-                    temp_process[1] -= quantum
-                    ready_queue.append(temp_process)
-                    time += (quantum + overhead)
+        #quantum = random.randrange(1, TIME_QUANTUM_MAX + 1)
+        quantum_max = 6
+        #ready_queue = list(self.process_list)
+        #turn_around_time = [0] * len(self.process_list)
 
-            while quickest_process_id != ready_queue[0][0]:
-                if (ready_queue[0][1] - quantum <= 0):
+        for quantum in range(1, quantum_max):
+            for overhead in range(0, quantum + 1):
+                print("quantum: ",quantum)
+                print("overhead: ",overhead)
+                time = 0
+                ready_queue = copy.deepcopy(list(self.process_list))
+                turn_around_time = [0] * len(self.process_list)
+                while len(ready_queue) != 0:
+                    quickest_process_id = self.find_quickest_process_id(ready_queue)
+                    while self.quickest_process_greater_than_quantum(ready_queue, quickest_process_id, quantum):
+                        for process_num in range(0, len(ready_queue)):
+                            temp_process = copy.deepcopy(ready_queue[0])
+                            ready_queue.pop(0)
+                            temp_process[1] -= quantum
+                            ready_queue.append(temp_process)
+                            time += (quantum + overhead)
+                    while quickest_process_id != ready_queue[0][0]:
+                        if (ready_queue[0][1] - quantum <= 0):
+                            time += ready_queue[0][1]
+                            turn_around_time[ready_queue[0][0] - 1] = time
+                            ready_queue.pop(0)
+                            time += overhead
+                        else:
+                            temp_process = copy.deepcopy(ready_queue[0])
+                            ready_queue.pop(0)
+                            temp_process[1] -= quantum
+                            ready_queue.append(temp_process)
+                            time += (quantum + overhead)
+                    
                     time += ready_queue[0][1]
                     turn_around_time[ready_queue[0][0] - 1] = time
                     ready_queue.pop(0)
                     time += overhead
-                else:
-                    temp_process = copy.deepcopy(ready_queue[0])
-                    ready_queue.pop(0)
-                    temp_process[1] -= quantum
-                    ready_queue.append(temp_process)
-                    time += (quantum + overhead)
-            
-            time += ready_queue[0][1]
-            turn_around_time[ready_queue[0][0] - 1] = time
-            ready_queue.pop(0)
-            time += overhead
 
-        print(turn_around_time)
+                print(turn_around_time)
+                print()
+                #self.print_RR_schedule(quantum, overhead, turn_around_time, process_list_immutable)
+
+
+    def print_RR_schedule(self, quantum, overhead, turn_around_time, process_list_immutable):
+        print("preemptive RR schedule, quantum = ", quantum, " overhead = ", overhead)
+
+        print("PROCLIST: ", process_list_immutable)
+
+        for current_quantum in range(1, quantum + 1):
+            print("current_quantum: ", current_quantum)
+            for overhead in range(0, current_quantum):
+                print("overhead: ", overhead)
+                for process in range(0, len(turn_around_time)):
+                    print("process: ", process)
+                    print("RR TA time for finished p", process + 1, " = ", turn_around_time[process], ", needed: ", process_list_immutable[process][1], " ms, and: ", process_list_immutable[process][1], " time slices.")
             
 
 
