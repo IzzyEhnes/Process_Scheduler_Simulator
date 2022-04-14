@@ -162,7 +162,9 @@ class RR(OS):
     def print_RR_schedule(self, quantum, overhead, turn_around_time):
         print("preemptive RR schedule, quantum = ", quantum, " overhead = ", overhead)
         for process in range(0, len(turn_around_time)):
-            print("RR TA time for finished p" + str(process + 1) + " = " + str(turn_around_time[process]) + ", needed: " + str(self.process_list[process][1]) + " ms, and: " + str(math.ceil(self.process_list[process][1] / quantum)) + " time slices.")
+            print("RR TA time for finished p" + str(process + 1) + " = " + str(turn_around_time[process]) + 
+                    ", needed: " + str(self.process_list[process][1]) + " ms, and: " + 
+                    str(math.ceil(self.process_list[process][1] / quantum)) + " time slices.")
         print()
             
 
