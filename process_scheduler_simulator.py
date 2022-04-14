@@ -1,6 +1,6 @@
-import random
-import math
-import copy
+from random import randrange
+from math import ceil
+from copy import deepcopy
 
 TIME_QUANTUM_MAX = 5
 
@@ -136,12 +136,12 @@ class RR(OS):
     # Runs the preemptive RR schedule
     def complete_RR_schedule(self):
 
-        quantum_max = random.randrange(1, TIME_QUANTUM_MAX + 1)  #  max number of ms a process is able to execute
+        quantum_max = randrange(1, TIME_QUANTUM_MAX + 1)  #  max number of ms a process is able to execute
 
         for quantum in range(1, quantum_max):
             for overhead in range(0, quantum + 1):  # overhead is cost (in ms) to switch to a different process
                 time = 0
-                ready_queue = copy.deepcopy(list(self.process_list))  # queue of processes that have not yet completed
+                ready_queue = deepcopy(list(self.process_list))  # queue of processes that have not yet completed
                 turn_around_time = [0] * len(self.process_list)  # a list to store the span of time each process takes to complete
 
                 while len(ready_queue) != 0:
@@ -152,7 +152,7 @@ class RR(OS):
                     # least amount of time has a remaining time that is <= the quantum
                     while self.quickest_process_greater_than_quantum(ready_queue, quickest_process_id, quantum):
                         for process_num in range(0, len(ready_queue)):
-                            temp_process = copy.deepcopy(ready_queue[0])
+                            temp_process = deepcopy(ready_queue[0])
                             ready_queue.pop(0)
                             temp_process[1] -= quantum
                             ready_queue.append(temp_process)
@@ -174,7 +174,7 @@ class RR(OS):
                             
                         # allow the process at the front of the queue to execute for quantum ms and move it to end of ready queue
                         else:
-                            temp_process = copy.deepcopy(ready_queue[0])
+                            temp_process = deepcopy(ready_queue[0])
                             ready_queue.pop(0)
                             temp_process[1] -= quantum
                             ready_queue.append(temp_process)
@@ -198,7 +198,7 @@ class RR(OS):
         for process in range(0, len(turn_around_time)):
             print("RR TA time for finished p" + str(process + 1) + " = " + str(turn_around_time[process]) + 
                     ", needed: " + str(self.process_list[process][1]) + " ms, and: " + 
-                    str(math.ceil(self.process_list[process][1] / quantum)) + " time slices.")
+                    str(ceil(self.process_list[process][1] / quantum)) + " time slices.")
 
         throughput = round((len(turn_around_time) / max(turn_around_time)), 7)
         print("RR Throughput, " + str(len(turn_around_time)) + " processes, with q: " + str(quantum) + ", o: " + str(overhead) + 
